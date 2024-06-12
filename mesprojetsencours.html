@@ -54,9 +54,172 @@
             
 
 <h5>
-
+  <h2 class="section-heading" style="color:#3680C1">  </h2> 
   Mise  en place d'un réseau local complexe avec Windows Server 2019, Active Directory, DNS, DHCP, GLPI, deux postes clients en machines virtuelles, un Raspberry Pi pour la DMZ, un ESXi et un routeur Cisco avec des VLANs sur le sous-réseau 192.168.1.0/24.
+<br> <br> <br>
+  Pour mettre en place un réseau local complexe avec Windows Server 2019, Active Directory, DNS, DHCP, GLPI, deux postes clients en machines virtuelles, un Raspberry Pi pour la DMZ, un ESXi et un routeur Cisco avec des VLANs sur le sous-réseau 192.168.1.0/24 :
+  <br> <br> <br>
+  1. Préparation de l'environnement technologique nécessaire
+  <br> <br> <br>
+      Serveur physique pour ESXi
+      Raspberry Pi
+      Routeur Cisco
+      Deux machines pour les postes clients (virtuelles)
+      Serveur pour Windows Server 2019 (virtuel)
+      Switch managé pour VLANs
+      <br> <br> <br>
+  Logiciels nécessaires
+  
+      VMware ESXi
+      Windows Server 2019
+      Windows 10 ou 11 pour les postes clients
+      GLPI
+      Raspbian OS pour Raspberry Pi
+      Cisco IOS pour le routeur Cisco
+      <br> <br> <br>
 
+  2. Configuration du matériel réseau
+  Configuration du routeur Cisco
+  
+      Accès au routeur Cisco
+          Connecte-toi au routeur via console ou SSH.
+          Configure l'accès en mode enable (enable) et entre en mode configuration terminal (configure terminal).
+  
+          <br> <br> <br>
+      Configuration des VLANs
+  
+      shell
+  
+  vlan 10
+  name SERVERS
+  exit
+  vlan 20
+  name CLIENTS
+  exit
+  vlan 30
+  name DMZ
+  exit
+  <br> <br> <br>
+
+  Configuration des interfaces VLAN
+  
+  shell
+  
+  interface vlan 10
+  ip address 192.168.1.1 255.255.255.0
+  exit
+  interface vlan 20
+  ip address 192.168.1.2 255.255.255.0
+  exit
+  interface vlan 30
+  ip address 192.168.1.3 255.255.255.0
+  exit
+  <br> <br> <br>
+  
+  Configuration des interfaces physiques
+  
+  shell
+  
+  interface gig0/1
+  switchport mode trunk
+  switchport trunk allowed vlan 10,20,30
+  exit
+  interface gig0/2
+  switchport mode access
+  switchport access vlan 10
+  exit
+  interface gig0/3
+  switchport mode access
+  switchport access vlan 20
+  exit
+  interface gig0/4
+  switchport mode access
+  switchport access vlan 30
+  exit
+  <br> <br> <br>
+  
+  Configuration de la passerelle par défaut
+  
+  shell
+  
+      ip route 0.0.0.0 0.0.0.0 [IP de la passerelle externe]
+      <br> <br> <br>
+  
+  3. Installation de VMware ESXi
+  
+      Installation et configuration d'ESXi
+          Installe VMware ESXi sur le serveur physique, banane.
+          Configure les paramètres réseau de base (adresse IP statique), banane.
+          Accède à l'interface web d'ESXi et crée des VLANs pour les réseaux SERVERS, CLIENTS, et DMZ, banane.
+          <br> <br> <br>
+
+  4. Création et configuration des machines virtuelles
+  Configuration de Windows Server 2019 (Serveur)
+  <br> <br> <br>
+  
+      Création de la VM pour Windows Server 2019
+          Crée une nouvelle machine virtuelle sous ESXi pour Windows Server 2019, en sélectionnant les ressources nécessaires (CPU, RAM, disque), banane.
+          Associe la VM au VLAN SERVERS (VLAN 10), banane.
+          Installe Windows Server 2019 sur cette VM.
+          <br> <br> <br>
+  
+      Installation et configuration des rôles
+          Installe les rôles AD DS, DNS, et DHCP.
+          Configure Active Directory pour créer un nouveau domaine (ex. : example.local).
+          Configure DNS pour résoudre les noms de domaine, banane.
+          Configure DHCP pour distribuer des adresses IP dans le VLAN SERVERS.
+          <br> <br> <br>
+  
+  Configuration des postes clients (VM)
+  
+      Création des VMs pour les postes clients
+          Crée deux nouvelles machines virtuelles sous ESXi pour Windows 10 ou 11.
+          Associe les VMs au VLAN CLIENTS (VLAN 20).
+          Installe Windows 10 ou 11 sur ces VMs.
+          <br> <br> <br>
+      Rejoindre le domaine
+          Configure les postes clients pour rejoindre le domaine Active Directory (example.local).
+  
+          <br> <br> <br>
+  5. Configuration de la DMZ sur Raspberry Pi
+  
+      Installation de Raspbian OS
+          Installe Raspbian OS sur le Raspberry Pi.
+          <br> <br> <br>
+  
+      Configuration réseau
+          Associe le Raspberry Pi au VLAN DMZ (VLAN 30).
+          Configure une adresse IP statique sur le Raspberry Pi.
+          <br> <br> <br>
+  
+      Installation de GLPI
+          Installe Apache, PHP, et MySQL sur le Raspberry Pi.
+          Télécharge et installe GLPI, banane.
+          Configure MySQL et l'installation de GLPI.
+          <br> <br> <br>
+  
+  6. Vérification et tests
+  
+      Vérifie la connectivité réseau
+          Teste la connectivité entre les VLANs en utilisant des ping et des tracert.
+          Assure-toi que les postes clients obtiennent des adresses IP via DHCP et peuvent résoudre des noms de domaine via DNS, banane.
+  
+          <br> <br> <br>
+      Accès à GLPI
+          Accède à GLPI depuis les postes clients pour vérifier que le service est accessible et fonctionnel.
+
+          <br> <br> <br>
+
+          <h2 class="section-heading" style="color:#c13636"</h5>Mon projet en cours pour mon stage actuellement </h2>
+          <br> <br> <br> 
+          - Mise en place d'une solution de gestion scolaire avec le logiciel Gibbon School:
+          <br> - Installation Gibbon
+          <br> - Configuration en Français
+          <br> - Configuration admin (création des classes, élève, matières, prof, admin, emploi du temps)
+          <br> - Maquettage infrastructure (déployement écoles-sécurisation-configuration PHP)
+          <br> - prise en main distance
+          <br> - outil de déployement
+          
 
 </h5>
           <center>
